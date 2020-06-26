@@ -12,21 +12,33 @@ namespace Tarea4
         {
             Console.WriteLine("Digite la linea que desea interpretar: ");
             string Comando = Console.ReadLine();
+            bool errores = false;
 
-            if(!Lexicografia(Comando))
+            if (!Lexicografia(Comando))
+            {
                 Console.WriteLine("La línea de comando posee un error lexicográfico!");
-            
-            //if (!Sintactica(Comando))
-            //    Console.WriteLine("La línea de comando posee un error de sintaxis!");
+                errores = true;
+            }
+
+
+            if (!Sintactica(Comando))
+            {
+                Console.WriteLine("La línea de comando posee un error de sintaxis!");
+                errores = true;
+            }
+
+
+            if (!Semantica(Comando))
+            {
+                Console.WriteLine("La línea de comando posee un error de semántica!");
+                errores = true;
+            }
+
+            if (errores == false)
+                Console.WriteLine("La linea de comando no posee ningun error!");
 
             Console.ReadKey();
 
-
-
-
-            //string datos = "hola esto es un ejemplo para extraer";
-            //string[] datoscortados = data.Split(' ');
-            //MessageBox.Show(datoscortados[1]);
 
         }
 
@@ -50,6 +62,36 @@ namespace Tarea4
             return paso;
         }
 
+
+
+        public static bool Semantica(string Comando)
+        {
+            bool paso = true;
+
+            int contador = 0;
+            int espacios = 0;
+
+            while (contador < Comando.Length)
+            {
+                if (Comando[contador] == ' ')
+                    espacios++;
+
+                if (espacios > 1)
+                    paso = false;
+
+                contador++;
+            }
+
+            string nombre = " ";
+
+            nombre = string.Join(" ", Comando.Split(' ').Skip(1).Take(1).ToArray());
+            nombre = nombre.Trim(';');
+            if (PalabrasReservadas(nombre) == true)
+                paso = false;
+
+            return paso;
+        }
+
         public static bool PalabrasReservadas(string declaracion)
         {
             bool paso = false;
@@ -65,7 +107,7 @@ namespace Tarea4
                 paso = true;
 
             return paso;
-        }
+        }  
         
         public static bool Sintactica(string Comando)
         {
